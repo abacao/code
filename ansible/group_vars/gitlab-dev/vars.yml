@@ -1,0 +1,33 @@
+---
+gitlab_version: "9.4.2"
+web_network_range: "192.168.33.0/24"
+redis_remote: true  # Change redis remote to non-omnibus-redis or something
+redis_ip: ""
+redis_port: ""
+redis_password: "foobared" # move to vault
+postgres_ip: "192.168.33.10"
+postgres_port: "5432"
+postgres_admin_user: "postgres"
+postgres_password: "password"  # this should go in vault
+gitlab_user: "gitlab_dev"
+gitlab_user_password: "password"  # move to vault
+gitlab_database :     "gitlabhq_dev"
+gitlab_database_sslmode: "nil" # change me later
+gitlab_sslrootcert: "nil" # Change me later
+
+#gitlab_external_url:
+
+#artifacts_enabled: true
+#artifacts_path:
+
+lfs_enabled: true
+
+managed_backup_path: false # Should be on
+backup_path: ''
+shared_storage_path: ''
+http_proxy: ""
+https_proxy: ""
+
+# Minimum 2
+unicorn_worker_processes: 2 
+### More postgres options who go into postgresql.conf come also here

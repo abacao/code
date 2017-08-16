@@ -1,0 +1,8 @@
+# Ansible Inventory for dev.codes.siemens.com
+
+[gitlab-dev]
+dev.codes.siemens.com ansible_host=192.168.33.21
+#dev.codes.siemens.com ansible_host=192.168.33.22
+
+[db]
+gitlabdb ansible_host=192.168.33.10
