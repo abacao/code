@@ -9,7 +9,7 @@ Vagrant.configure("2") do |config|
 		ansible_server.vm.synced_folder "./ansible", "/home/vagrant/ansible", type: "virtualbox"
 		ansible_server.vm.network "private_network", ip: "192.168.33.10"
 		
-		db.vm.provider :virtualbox do |vb|
+		ansible_server.vm.provider :virtualbox do |vb|
 			vb.customize ["modifyvm", :id, "--memory", 1024]
 			vb.customize ["modifyvm", :id, "--cpus", 1]
 		end
