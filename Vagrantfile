@@ -9,25 +9,19 @@ Vagrant.configure("2") do |config|
 		ansible_server.vm.synced_folder "./ansible", "/home/vagrant/ansible", type: "virtualbox"
 		ansible_server.vm.network "private_network", ip: "192.168.33.10"
 		
-		db.vm.provider :virtualbox do |vb|
+		ansible_server.vm.provider :virtualbox do |vb|
 			vb.customize ["modifyvm", :id, "--memory", 1024]
 			vb.customize ["modifyvm", :id, "--cpus", 1]
 		end
 
 		$script = <<-SHELL
 		#sudo yum update -y
-	
 		sudo yum install epel-release -y
-		
 		#sudo yum install nc -y
-		
 		sudo yum install ansible -y
-		
-		sudo chmod 400 /home/vagrant/.ssh/ida_rsa
+		sudo chmod 400 /home/vagrant/.ssh/id_rsa
 		sudo chmod 600 /home/vagrant/.ssh/config
-
 		sudo mv bash_profile .bash_profile
-	
 		SHELL
 		
 		ansible_server.vm.provision "file", source: "./key/private_key.pem", destination: "/home/vagrant/.ssh/id_rsa"
@@ -55,6 +49,7 @@ Vagrant.configure("2") do |config|
 			sudo yum update -y
 			sudo yum install postgresql-server postgresql-contrib -y
 			sudo postgresql-setup initdb
+			systemctl start postgresql.service
 			sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'MyPass123' ;"
 		    # sudo systemctl enable firewalld
 			# sudo systemctl start firewalld

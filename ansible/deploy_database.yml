@@ -8,18 +8,16 @@
   tasks:
    - name: Copy pg_hba.conf 
      template: src=templates/pg_hba.conf.j2 dest=/var/lib/pgsql/data/pg_hba.conf
-     notify: Restart postgres
-    
+
    - name: Copy postgres.conf 
      template: src=templates/postgresql.conf.j2 dest=/var/lib/pgsql/data/postgresql.conf
-     notify: Restart postgres
-
+     
    - name: Installing python module psycopg2 required for postgresql_user ansible module - eagle should provide
-     yum: name=python-psycopg2 state=present
+     package: name=python-psycopg2 state=present
      become_user: root
    
    - name: Reloading postgres with the new configuration files
-     systemd: name=postgresql.service state=reloaded
+     systemd: name=postgresql.service state=restarted
      become_user: root
    
    - name: Create gitlab user in postgres database
@@ -47,8 +45,4 @@
        login_password: "{{ postgres_password }}"
        port: "{{ postgres_port }}"
        state: present
-       
-  handlers:
-    - name: Restart postgres
-      systemd: state=restarted enabled=yes name=postgres 
-      become: true
+      
