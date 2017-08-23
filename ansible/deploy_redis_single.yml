@@ -1,0 +1,50 @@
+---
+- name: Installing and onfiguring redis
+  become: no
+  hosts: gitlab
+  #become_user: 
+  # vars:
+  #   version: ""
+  tasks:
+    - name: Installing redis
+      yum: state=present name={{ item }}
+      with_items:
+        - epel-release.noarch
+        - redis
+        
+    - name: Creating redis directories
+      file:
+        path: /etc/redis/
+        state: directory
+        owner: redis
+        group: redis
+      with_items:
+        - "/etc/redis/"
+        - "/var/redis" 
+        - "/var/redis/6379"
+
+    - name: Copy redis systemd file 
+      copy:
+        src: files/redis-6379.service
+        dest: /usr/lib/systemd/system/redis-6379.service
+    
+    - name: Copy redis configuration file
+      copy:
+        src: files/redis-6379.conf
+        dest: /etc/redis/redis-6379.conf
+        #owner: Redis?
+    
+    - name:
+      systemd: 
+        name: redis-6379.service 
+        state: started 
+        enabled: yes 
+
+
+# 		#sudo gitlab-rake gitlab:setup # This command has to be ran only once
+#		sudo gitlab-ctl reconfigure
+
+# TODO: check now if some permissions are still missing when starting redis
+# TODO: firewall part if not done by eagle?
+# TODO: Maybe  have a variable for the 6379, in case we want to use other ports as well
+# then we have to use a j2 template for redis configuration files
