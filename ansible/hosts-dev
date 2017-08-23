@@ -1,8 +1,12 @@
 # Ansible Inventory for dev.codes.siemens.com
 
-[gitlab-dev]
-dev.codes.siemens.com ansible_host=192.168.33.21
+[gitlab-dev:children]
+gitlab
+db
+
+[gitlab]
+dev.codes.siemens.com ansible_host=192.168.33.21 ansible_port=22 ansible_user=vagrant
 #dev.codes.siemens.com ansible_host=192.168.33.22
 
 [db]
-gitlabdb ansible_host=192.168.33.10
+gitlabdb ansible_host=192.168.33.11 ansible_port=22 ansible_user=vagrant

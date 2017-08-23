@@ -357,7 +357,7 @@ gitlab_rails['db_encoding'] = "unicode"
 gitlab_rails['db_collation'] = nil
 gitlab_rails['db_database'] = "gitlabhq_dev"  # TODO: change based on dev, prod, etc
 gitlab_rails['db_pool'] = 10
-gitlab_rails['db_username'] = "gitlab"
+gitlab_rails['db_username'] = "gitlab_dev"
 gitlab_rails['db_password'] = "password"
 gitlab_rails['db_host'] = "192.168.33.11"
 gitlab_rails['db_port'] = 5432
@@ -373,9 +373,9 @@ gitlab_rails['db_port'] = 5432
 ###! Docs: https://docs.gitlab.com/omnibus/settings/redis.html
 
 #### Redis TCP connection  # TODO - Add via ansible variable this
-gitlab_rails['redis_host'] = "127.0.0.1"
-gitlab_rails['redis_port'] = 6379
-gitlab_rails['redis_password'] = "foobared"
+#gitlab_rails['redis_host'] = "127.0.0.1"
+#gitlab_rails['redis_port'] = 6379
+#gitlab_rails['redis_password'] = "foobared"
 # gitlab_rails['redis_database'] = 0
 
 #### Redis local UNIX socket (will be disabled if TCP method is used)
@@ -709,7 +709,7 @@ postgresql['enable'] = false
 ##! Docs: https://docs.gitlab.com/omnibus/settings/redis.html
 ################################################################################
 
-redis['enable'] = false
+# redis['enable'] = true
 # redis['username'] = "gitlab-redis"
 # redis['maxclients'] = "10000"
 # redis['tcp_timeout'] = "60"

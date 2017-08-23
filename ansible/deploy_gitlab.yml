@@ -11,25 +11,33 @@
         path: /etc/gitlab
         state: directory
         owner: root
-        group: root
+        group: gitadm
       become: true
     
-    - name: Copying configuration file template
-      template: src=templates/gitlab.rb.j2 dest=/etc/gitlab/gitlab.rb
+    - name: Copying configuration file template | gitlab.rb
+      copy: 
+        src: templates/gitlab.rb.j2 
+        dest: /etc/gitlab/gitlab.rb
+      become_user: root
+      become: true
     
-    - name: Copying gitlab secrets file
-      file: 
+    - name: Copying gitlab secrets file | gitlab-secrets.json
+      copy: 
         src: files/gitlab-secrets.json
         dest: /etc/gitlab/gitlab-secrets.json
+      become_user: root
+      become: true
 
     - name: Downloading gitlab rpm
-      get_url: 
-        url: https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/gitlab-ce-9.4.2-ce.0.el7.x86_64.rpm/download
-        dest: /tmp/gitlab.rpm
-        # sha256sum: 
-
+      shell: curl -JL https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/gitlab-ce-9.4.2-ce.0.el7.x86_64.rpm/download -o /tmp/gitlab.rpm
+      
     - name: Installing Gitlab
       yum: 
         name: /tmp/gitlab.rpm
         state: present
       become: true
+    
+    - name: Configuring gitlab | gitlab-ctl reconfigure
+      shell: gitlab-ctl reconfigure
+      become: true
+      become_user: root

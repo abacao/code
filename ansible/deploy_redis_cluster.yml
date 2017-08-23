@@ -1,0 +1,8 @@
+Steps:
+prepare filesystems for redis
+Download
+Install
+Configure
+Start cluster
+add slave node
+- then next yml is: deploy sentinels.

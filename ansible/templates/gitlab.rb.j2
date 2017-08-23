@@ -10,7 +10,7 @@
 ##! URL on which GitLab will be reachable.
 ##! For more details on configuring external_url see:
 ##! https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-the-external-url-for-gitlab
-external_url 'https://{{gitlab_external_url}}'
+external_url 'https://{{gitlab_external_url if gitlab_external_url else "localhost"}}'
 
 ## Legend
 ##! The following notations at the beginning of each line may be used to
@@ -141,7 +141,7 @@ gitlab_rails['incoming_email_enabled'] = false
 
 ### Job Artifacts # TODO: Enable artifacts ? if yes, see under which mountpoint. 
 gitlab_rails['artifacts_enabled'] = {{ "true" if artifacts_enabled else "false" }}
-gitlab_rails['artifacts_path'] =  {{artifacts_path if artifacts_enabled}}  # TODO: If artifacts_enabled is false, this option will be ignored?
+gitlab_rails['artifacts_path'] =  {{artifacts_path if artifacts_enabled else ''}}  # TODO: If artifacts_enabled is false, this option will be ignored?
 # gitlab_rails['artifacts']['object_store_enabled'] = false
 # gitlab_rails['artifacts']['object_store_remote_directory'] = "artifacts"
 # gitlab_rails['artifacts']['object_store_connection'] = {
@@ -153,7 +153,7 @@ gitlab_rails['artifacts_path'] =  {{artifacts_path if artifacts_enabled}}  # TOD
 
 ### Git LFS
 gitlab_rails['lfs_enabled'] = {{ "true" if lfs_enabled else "false" }}
-# gitlab_rails['lfs_storage_path'] = {{ lfs_storage_path if lfs_is_enabled }}
+# gitlab_rails['lfs_storage_path'] = lfs path is under shared, so no self managed
 
 ### Usage Statistics
 # gitlab_rails['usage_ping_enabled'] = true
@@ -249,8 +249,8 @@ gitlab_rails['ldap_enabled'] = false
 ### Backup Settings # TODO: Extra filesystem for these backups
 ###! Docs: https://docs.gitlab.com/omnibus/settings/backups.html
 
-gitlab_rails['manage_backup_path'] = {{ true if managed_backup_path else false }
-gitlab_rails['backup_path'] = {{ backup_path if managed_backup_path }}
+gitlab_rails['manage_backup_path'] = {{ true if managed_backup_path else false }}
+gitlab_rails['backup_path'] = {{ backup_path if managed_backup_path else ""}}
 # gitlab_rails['backup_path'] = "/var/opt/gitlab/backups"
 
 ###! Docs: https://docs.gitlab.com/ce/raketasks/backup_restore.html#backup-archive-permissions
@@ -365,7 +365,7 @@ gitlab_rails['db_database'] = {{ gitlab_database }}
 gitlab_rails['db_pool'] = 10
 gitlab_rails['db_username'] = {{ gitlab_user }}
 gitlab_rails['db_password'] = {{ gitlab_user_password }}
-gitlab_rails['db_host'] = {{ postgres_ip }}
+gitlab_rails['db_host'] = "{{ postgres_ip }}"
 gitlab_rails['db_port'] = {{ postgres_port }}
 # gitlab_rails['db_socket'] = nil
 # gitlab_rails['db_sslmode'] = {{ gitlab_database_sslmode }}
@@ -379,11 +379,11 @@ gitlab_rails['db_port'] = {{ postgres_port }}
 ###! Docs: https://docs.gitlab.com/omnibus/settings/redis.html
 
 #### Redis TCP connection  # TODO - Add via ansible variable this
-# TODO: Maybe do something like : redis_host = {{ redis_ip if redis_remote else 127.0.0.1 }} . Same for port 
+
 gitlab_rails['redis_host'] = {{ redis_ip }}
-gitlab_rails['redis_port'] = {{ redis port }}
-gitlab_rails['redis_password'] = {{ redis_password }} # Should come from vault
-# gitlab_rails['redis_database'] = 0
+gitlab_rails['redis_port'] = {{ redis_port }}
+gitlab_rails['redis_password'] = {{ redis_password }}
+#gitlab_rails['redis_database'] = 0
 
 #### Redis local UNIX socket (will be disabled if TCP method is used)
 # gitlab_rails['redis_socket'] = "/var/opt/gitlab/redis/redis.socket"
@@ -481,8 +481,6 @@ gitlab_rails['redis_password'] = {{ redis_password }} # Should come from vault
 # registry['default_notifications_threshold'] = 5
 # registry['default_notifications_backoff'] = "1s"
 # registry['default_notifications_headers'] = {}
-
-
 
 ################################################################################
 ## GitLab Workhorse
