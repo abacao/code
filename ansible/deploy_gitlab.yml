@@ -15,7 +15,7 @@
       become: true
     
     - name: Copying configuration file template | gitlab.rb
-      copy: 
+      template: 
         src: templates/gitlab.rb.j2 
         dest: /etc/gitlab/gitlab.rb
       become_user: root
@@ -41,3 +41,12 @@
       shell: gitlab-ctl reconfigure
       become: true
       become_user: root
+
+    - name: Populate the database - this step has to be run only once in production. In vagrant however ... 
+      expect:
+        command: gitlab-rake gitlab:setup
+        responses:
+          'Do you want to continue \(yes/no\)\?': "yes"
+      become_user: root
+      become: true
+      
