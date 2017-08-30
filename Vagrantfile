@@ -47,7 +47,7 @@ Vagrant.configure("2") do |config|
 			cat /home/vagrant/public_key.pub >> /home/vagrant/.ssh/authorized_keys 
 			
 			sudo yum update -y
-			sudo yum install postgresql-server postgresql-contrib -y
+			sudo yum install postgresql-server postgresql-contrib epel-release -y
 			sudo postgresql-setup initdb
 			systemctl start postgresql.service
 			sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'MyPass123' ;"
@@ -78,16 +78,22 @@ Vagrant.configure("2") do |config|
 					
 		#TODO enable SE Linux
 		sudo setenforce 0
+		sudo groupadd gitadm
 
 		sudo yum update -y
 
-		sudo yum install curl policycoreutils openssh-server openssh-clients -y
+  
+		sudo yum install curl policycoreutils openssh-server openssh-clients epel-release -y
+		sudo yum -y install python-pip
+		sudo pip install pexpect
+
 		sudo systemctl enable sshd
 		sudo systemctl start sshd
 		sudo yum install postfix
 		sudo systemctl enable postfix
 		sudo systemctl start postfix
-		
+	 
+		# sudo gitlab-rake gitlab:setup
 		
 
 		# systemctl enable firewalld

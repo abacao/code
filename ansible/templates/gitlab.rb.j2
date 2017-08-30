@@ -10,7 +10,7 @@
 ##! URL on which GitLab will be reachable.
 ##! For more details on configuring external_url see:
 ##! https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-the-external-url-for-gitlab
-external_url 'https://{{gitlab_external_url if gitlab_external_url else "localhost"}}'
+external_url 'http://{{gitlab_external_url if gitlab_external_url else "localhost"}}'
 
 ## Legend
 ##! The following notations at the beginning of each line may be used to
@@ -39,11 +39,11 @@ external_url 'https://{{gitlab_external_url if gitlab_external_url else "localho
 # gitlab_rails['gitlab_ssh_host'] = 'ssh.host_example.com'
 # gitlab_rails['time_zone'] = 'UTC'
 
-### Email Settings
-gitlab_rails['gitlab_email_enabled'] = {{ "true" if gitlab_email else "false" }}
-gitlab_rails['gitlab_email_from'] = 'noreply@{{gitlab_external_url}}'
-gitlab_rails['gitlab_email_display_name'] = '{{gitlab_external_url}}'
-gitlab_rails['gitlab_email_reply_to'] = 'noreply@{{gitlab_external_url}}'
+### Email Settings # TODO: remove comments
+# gitlab_rails['gitlab_email_enabled'] = {{ "true" if gitlab_email else "false" }}
+# gitlab_rails['gitlab_email_from'] = 'noreply@{{gitlab_external_url}}'
+# gitlab_rails['gitlab_email_display_name'] = '{{gitlab_external_url}}'
+# gitlab_rails['gitlab_email_reply_to'] = 'noreply@{{gitlab_external_url}}'
 # gitlab_rails['gitlab_email_subject_suffix'] = ''
 
 ### GitLab user privileges
@@ -54,12 +54,12 @@ gitlab_rails['gitlab_default_can_create_group'] = false
 # gitlab_rails['gitlab_default_theme'] = 2
 
 ### Default project feature settings # TODO: Review with colleagues
-gitlab_rails['gitlab_default_projects_features_issues'] = true
-gitlab_rails['gitlab_default_projects_features_merge_requests'] = true
-gitlab_rails['gitlab_default_projects_features_wiki'] = false
-gitlab_rails['gitlab_default_projects_features_snippets'] = false
-gitlab_rails['gitlab_default_projects_features_builds'] = true
-gitlab_rails['gitlab_default_projects_features_container_registry'] = false
+# gitlab_rails['gitlab_default_projects_features_issues'] = true
+# gitlab_rails['gitlab_default_projects_features_merge_requests'] = true
+# gitlab_rails['gitlab_default_projects_features_wiki'] = false
+# gitlab_rails['gitlab_default_projects_features_snippets'] = false
+# gitlab_rails['gitlab_default_projects_features_builds'] = true
+# gitlab_rails['gitlab_default_projects_features_container_registry'] = false
 
 ### Automatic issue closing
 ###! See https://docs.gitlab.com/ce/customization/issue_closing.html for more
@@ -139,9 +139,13 @@ gitlab_rails['incoming_email_enabled'] = false
 ####! The IDLE command timeout.
 # gitlab_rails['incoming_email_idle_timeout'] = 60
 
-### Job Artifacts # TODO: Enable artifacts ? if yes, see under which mountpoint. 
-gitlab_rails['artifacts_enabled'] = {{ "true" if artifacts_enabled else "false" }}
-gitlab_rails['artifacts_path'] =  {{artifacts_path if artifacts_enabled else ''}}  # TODO: If artifacts_enabled is false, this option will be ignored?
+### Job Artifacts # 
+gitlab_rails['artifacts_enabled'] = {{ artifacts_enabled }}
+{% if artifacts_enabled == "true" %}
+gitlab_rails['artifacts_path'] =  "{{ artifacts_path }}"
+{% else %}
+# gitlab_rails['artifacts_path'] = "/mnt/storage/artifacts"
+{% endif %}
 # gitlab_rails['artifacts']['object_store_enabled'] = false
 # gitlab_rails['artifacts']['object_store_remote_directory'] = "artifacts"
 # gitlab_rails['artifacts']['object_store_connection'] = {
@@ -227,7 +231,7 @@ gitlab_rails['ldap_enabled'] = false
 #     sync_ssh_keys: false
 # EOS
 
-### OmniAuth Settings # TODO: Enable this to use the CES 
+### OmniAuth Settings #  
 ###! Docs: https://docs.gitlab.com/ce/integration/omniauth.html
 # gitlab_rails['omniauth_enabled'] = false
 # gitlab_rails['omniauth_allow_single_sign_on'] = ['saml']
@@ -249,9 +253,12 @@ gitlab_rails['ldap_enabled'] = false
 ### Backup Settings # TODO: Extra filesystem for these backups
 ###! Docs: https://docs.gitlab.com/omnibus/settings/backups.html
 
-gitlab_rails['manage_backup_path'] = {{ true if managed_backup_path else false }}
-gitlab_rails['backup_path'] = {{ backup_path if managed_backup_path else ""}}
+gitlab_rails['manage_backup_path'] = {{ "true" if managed_backup_path else "false" }}
+{% if managed_backup_path %}
+gitlab_rails['backup_path'] = '{{ backup_path }}'
+{% else %}
 # gitlab_rails['backup_path'] = "/var/opt/gitlab/backups"
+{% endif %}
 
 ###! Docs: https://docs.gitlab.com/ce/raketasks/backup_restore.html#backup-archive-permissions
 gitlab_rails['backup_archive_permissions'] = 0644
@@ -261,8 +268,8 @@ gitlab_rails['backup_archive_permissions'] = 0644
 ###! The duration in seconds to keep backups before they are allowed to be deleted
 gitlab_rails['backup_keep_time'] = 604800
 
-# TODO: Find an alternative to S3. Maybe an extra share?
-# gitlab_rails['backup_upload_connection'] = {
+
+# gitlab_rails['backup_upload_connection'] = { # TODO: Find an alternative to S3. Maybe an extra share?
 #   'provider' => 'AWS',
 #   'region' => 'eu-west-1',
 #   'aws_access_key_id' => 'AKIAKIAKI',
@@ -292,8 +299,11 @@ gitlab_rails['gitaly_enabled'] = false
 
 ### For storing GitLab application uploads, eg. LFS objects, build artifacts
 ###! Docs: https://docs.gitlab.com/ce/development/shared_files.html
+{% if shared_storage_path %}
+gitlab_rails['shared_path'] = "{{ shared_storage_path }}"
+{% else %}
 # gitlab_rails['shared_path'] = '/var/opt/gitlab/gitlab-rails/shared'
-gitlab_rails['shared_path'] = {{ shared_storage_path}}
+{% endif %}
 
 ### GitLab Shell settings for GitLab
 # gitlab_rails['gitlab_shell_ssh_port'] = 22
@@ -345,7 +355,11 @@ gitlab_rails['shared_path'] = {{ shared_storage_path}}
 #### Change the initial default admin password and shared runner registraion tokens.
 ####! **Only applicable on initial setup, changing these settings after database
 ####!   is created and seeded won't yield any change.**
-gitlab_rails['initial_root_password'] = {{ gitlab_admin_password }} # Move this to vault
+{% if gitlab_admin_password %}
+gitlab_rails['initial_root_password'] =  "{{ gitlab_admin_password }}"
+{% else %}
+# gitlab_rails['initial_root_password'] = "password"
+{% endif %}
 # gitlab_rails['initial_shared_runners_registration_token'] = "token"
 
 #### Enable or disable automatic database migrations  ## TODO:gitlab_rails['auto_migrate'] = true only for first server install, then should be put on false ??  
@@ -361,15 +375,15 @@ gitlab_rails['initial_root_password'] = {{ gitlab_admin_password }} # Move this 
 gitlab_rails['db_adapter'] = "postgresql"
 gitlab_rails['db_encoding'] = "unicode"
 gitlab_rails['db_collation'] = nil
-gitlab_rails['db_database'] = {{ gitlab_database }}
+gitlab_rails['db_database'] = "{{ gitlab_database }}"
 gitlab_rails['db_pool'] = 10
-gitlab_rails['db_username'] = {{ gitlab_user }}
-gitlab_rails['db_password'] = {{ gitlab_user_password }}
+gitlab_rails['db_username'] = "{{ gitlab_user }}"
+gitlab_rails['db_password'] = "{{ gitlab_user_password }}"
 gitlab_rails['db_host'] = "{{ postgres_ip }}"
 gitlab_rails['db_port'] = {{ postgres_port }}
 # gitlab_rails['db_socket'] = nil
-# gitlab_rails['db_sslmode'] = {{ gitlab_database_sslmode }}
-# gitlab_rails['db_sslrootcert'] = {{ gitlab_sslrootcert }}
+# gitlab_rails['db_sslmode'] = "{{ gitlab_database_sslmode }}" # TODO: after i have everything prepared
+# gitlab_rails['db_sslrootcert'] = "{{ gitlab_sslrootcert }}"
 # gitlab_rails['db_prepared_statements'] = true
 # gitlab_rails['db_statements_limit'] = 1000
 
@@ -378,12 +392,18 @@ gitlab_rails['db_port'] = {{ postgres_port }}
 ###! Connect to your own Redis instance
 ###! Docs: https://docs.gitlab.com/omnibus/settings/redis.html
 
-#### Redis TCP connection  # TODO - Add via ansible variable this
-
-gitlab_rails['redis_host'] = {{ redis_ip }}
+#### Redis TCP connection  
+{% if redis_remote %}
+gitlab_rails['redis_host'] = "{{ redis_ip }}"
 gitlab_rails['redis_port'] = {{ redis_port }}
-gitlab_rails['redis_password'] = {{ redis_password }}
+gitlab_rails['redis_password'] = "{{ redis_password }}"
 #gitlab_rails['redis_database'] = 0
+{% else %}
+# gitlab_rails['redis_host'] = "127.0.0.1"
+# gitlab_rails['redis_port'] = 6379
+# gitlab_rails['redis_password'] = nil
+# gitlab_rails['redis_database'] = 0
+{% endif %}
 
 #### Redis local UNIX socket (will be disabled if TCP method is used)
 # gitlab_rails['redis_socket'] = "/var/opt/gitlab/redis/redis.socket"
@@ -398,11 +418,10 @@ gitlab_rails['redis_password'] = {{ redis_password }}
 #   {'host' => '127.0.0.1', 'port' => 26379},
 # ]
 
-# TODO: Try in eagle as well and test the smtp configuration
-### GitLab email server settings
+### GitLab email server settings # TODO: Try in eagle as well and test the smtp configuration
+
 ###! Docs: https://docs.gitlab.com/omnibus/settings/smtp.html
-###! **Use smtp instead of sendmail/postfix.**
-# TODO: SMTP, use the eagle email
+###! **Use smtp instead of sendmail/postfix.**# TODO: SMTP, use the eagle email
 # gitlab_rails['smtp_enable'] = true
 # gitlab_rails['smtp_address'] = "smtp.server"
 # gitlab_rails['smtp_port'] = 465
@@ -623,7 +642,7 @@ postgresql['enable'] = false
 # postgresql['shared_buffers'] = "256MB"
 
 ### Advanced settings 
-# postgresql['ha'] = false # TODO: true
+# postgresql['ha'] = false 
 # postgresql['dir'] = "/var/opt/gitlab/postgresql"
 # postgresql['log_directory'] = "/var/log/gitlab/postgresql"
 # postgresql['username'] = "gitlab-psql"
@@ -715,7 +734,7 @@ postgresql['enable'] = false
 ##! Docs: https://docs.gitlab.com/omnibus/settings/redis.html
 ################################################################################
 
-redis['enable'] = false
+# redis['enable'] = false # TODO: enable after Add variable: false if external_redis
 # redis['username'] = "gitlab-redis"
 # redis['maxclients'] = "10000"
 # redis['tcp_timeout'] = "60"
@@ -784,7 +803,7 @@ redis['enable'] = false
 
 # nginx['enable'] = true
 # nginx['client_max_body_size'] = '250m'
-nginx['redirect_http_to_https'] = {{ nginx_redirect_http_to_https }}
+nginx['redirect_http_to_https'] = {{ "true" if nginx_redirect_http_to_https else "false" }}
 # nginx['redirect_http_to_https_port'] = 80
 
 ##! Most root CA's are included by default
@@ -988,7 +1007,7 @@ nginx['redirect_http_to_https'] = {{ nginx_redirect_http_to_https }}
 # You just have to change the key "nginx['some_settings']" with "pages_nginx['some_settings']"
 
 # Below you can find settings that are exclusive to "GitLab Pages NGINX"
-pages_nginx['enable'] = false
+# pages_nginx['enable'] = false
 
 # gitlab_rails['pages_path'] = "/mnt/storage/pages"
 
@@ -1270,7 +1289,7 @@ pages_nginx['enable'] = false
 ##! Docs: https://docs.gitlab.com/ce/administration/monitoring/prometheus/node_exporter.html
 ################################################################################
 
-node_exporter['enable'] = true
+# node_exporter['enable'] = true
 # node_exporter['home'] = '/var/opt/gitlab/node-exporter'
 # node_exporter['log_directory'] = '/var/log/gitlab/node-exporter'
 # node_exporter['flags'] = {
@@ -1285,7 +1304,7 @@ node_exporter['enable'] = true
 ##! Docs: https://docs.gitlab.com/ce/administration/monitoring/prometheus/redis_exporter.html
 ################################################################################
 
-redis_exporter['enable'] = true
+# redis_exporter['enable'] = false
 # redis_exporter['log_directory'] = '/var/log/gitlab/redis-exporter'
 # redis_exporter['flags'] = {
 #   'redis.addr' => "unix://#{node['gitlab']['gitlab-rails']['redis_socket']}",
@@ -1299,7 +1318,7 @@ redis_exporter['enable'] = true
 ##! Docs: https://docs.gitlab.com/ce/administration/monitoring/prometheus/postgres_exporter.html
 ################################################################################
 
-postgres_exporter['enable'] = true
+# postgres_exporter['enable'] = false
 # postgres_exporter['home'] = '/var/opt/gitlab/postgres-exporter'
 # postgres_exporter['log_directory'] = '/var/log/gitlab/postgres-exporter'
 # postgres_exporter['flags'] = {}

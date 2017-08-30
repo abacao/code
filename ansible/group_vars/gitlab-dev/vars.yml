@@ -3,10 +3,10 @@ gitlab_version: "9.4.2"
 web_network_range: "192.168.33.0/24"
 admin_network_range: "10.0.2.2/24"
 postgre_network_range: "192.168.33.0/24"
-redis_remote: True  # Change redis remote to non-omnibus-redis or something
-redis_ip: ""
-redis_port: ""
-redis_password: "foobared" # TODO:  move to vault
+redis_remote: False  # Change redis remote to non-omnibus-redis or something
+redis_ip: nil
+redis_port: nil
+redis_password: nil # TODO:  move to vault
 postgres_ip: "192.168.33.11"
 postgres_port: "5432"
 postgres_admin_user: "postgres"
@@ -19,17 +19,18 @@ gitlab_sslrootcert: "nil" # TODO: Change me later
 
 gitlab_external_url:
 gitlab_email:
-gitlab_admin_password: "12345566"
+gitlab_admin_password: "Pass123!"
 
-artifacts_enabled: false
-#artifacts_path: # Path controlled and goes into shared?
+artifacts_enabled: "false"
+artifacts_path: ""
 
-nginx_redirect_http_to_https: true
+nginx_redirect_http_to_https: false
 lfs_enabled: true
 
 managed_backup_path: false # Should be on
-backup_path: ''
-shared_storage_path: ''
+backup_path: '/tmp'
+shared_storage_path: '/tmp'
+# shared_storage_path: ''
 http_proxy: ""
 https_proxy: ""
 
