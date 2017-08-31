@@ -1,3 +1,11 @@
+## [ temp files ]
 *.retry
-keys/
+*.swp
+
+## [ folders ]
 .vagrant
+
+## [ files ]
+id_rsa
+private_key.pem
+public_key.pub
