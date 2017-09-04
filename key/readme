@@ -1,0 +1,10 @@
+# Insert here:
+
+id_rsa
+private_key.pem
+public_key.pub
+
+# convert id_rsa to pem
+
+openssl rsa -in ~/.ssh/id_rsa -outform pem > id_rsa.pem
+chmod 700 id_rsa.pem

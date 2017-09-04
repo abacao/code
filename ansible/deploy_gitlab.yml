@@ -1,11 +1,17 @@
 ---
-- name: Installing and onfiguring gitlab
+- name: Installing and configuring gitlab
   become: no
   hosts: gitlab
-  #become_user: 
+  #become_user:
   # vars:
   #   version: ""
   tasks:
+    - name: Create gitadm User group
+      group:
+        name: gitadm
+        state: present
+      become: true
+
     - name: Create /etc/gitlab directory
       file:
         path: /etc/gitlab
@@ -13,34 +19,45 @@
         owner: root
         group: gitadm
       become: true
-    
+
     - name: Copying configuration file template | gitlab.rb
+<<<<<<< HEAD
+      copy:
+        src: templates/gitlab.rb.j2
+=======
       template: 
         src: templates/gitlab.rb.j2 
+>>>>>>> master
         dest: /etc/gitlab/gitlab.rb
       become_user: root
       become: true
-    
+
     - name: Copying gitlab secrets file | gitlab-secrets.json
-      copy: 
+      copy:
         src: files/gitlab-secrets.json
         dest: /etc/gitlab/gitlab-secrets.json
       become_user: root
       become: true
 
-    - name: Downloading gitlab rpm
-      shell: curl -JL https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/gitlab-ce-9.4.2-ce.0.el7.x86_64.rpm/download -o /tmp/gitlab.rpm
-      
+    - name: Downloading gitlab rpm (by get_url)
+      get_url:
+        url: https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/gitlab-ce-9.4.2-ce.0.el7.x86_64.rpm/download
+        dest: /tmp/gitlab.rpm
+        use_proxy: true
+        validate_certs: False
+
     - name: Installing Gitlab
-      yum: 
+      yum:
         name: /tmp/gitlab.rpm
         state: present
       become: true
-    
+
     - name: Configuring gitlab | gitlab-ctl reconfigure
-      shell: gitlab-ctl reconfigure
+      shell: gitlab-ctl reconfigure > /tmp/gitlab_reconfigure.log
       become: true
       become_user: root
+<<<<<<< HEAD
+=======
 
     - name: Populate the database - this step has to be run only once in production. In vagrant however ... 
       expect:
@@ -50,3 +67,4 @@
       become_user: root
       become: true
       
+>>>>>>> master
