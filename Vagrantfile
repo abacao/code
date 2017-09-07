@@ -1,10 +1,12 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+default_vm_box = "centos/7"
+
 Vagrant.configure("2") do |config|
 
 	config.vm.define "ansible_server", primary: true do |ansible_server|
-		ansible_server.vm.box = "centos/7"
+		ansible_server.vm.box = "#{default_vm_box}"
 		ansible_server.vm.synced_folder ".", "/vagrant", type: "virtualbox"
 		ansible_server.vm.synced_folder "./ansible", "/home/vagrant/ansible", type: "virtualbox"
 		ansible_server.vm.network "private_network", ip: "192.168.33.10"
@@ -36,7 +38,7 @@ Vagrant.configure("2") do |config|
 
 
 	config.vm.define "db" do |db|
-			db.vm.box = "centos/7"
+			db.vm.box = "#{default_vm_box}"
 			db.vm.synced_folder ".", "/vagrant", type: "virtualbox"
 			db.vm.network "private_network", ip: "192.168.33.11"
 			db.vm.hostname = "db"
@@ -68,7 +70,7 @@ Vagrant.configure("2") do |config|
 	end
 
 	config.vm.define "web-1" do |web|
-		web.vm.box = "centos/7"
+		web.vm.box = "#{default_vm_box}"
 		web.vm.synced_folder ".", "/vagrant", type: "virtualbox"
 		web.vm.network "private_network", ip: "192.168.33.21"
 		web.vm.hostname = "web1.codes.siemens.poc"
@@ -85,7 +87,7 @@ Vagrant.configure("2") do |config|
 
 		sudo yum update -y
 
-  
+
 		sudo yum install curl policycoreutils openssh-server openssh-clients epel-release -y
 		sudo yum -y install python-pip
 		sudo pip install pexpect
@@ -99,9 +101,9 @@ Vagrant.configure("2") do |config|
 
 
 =======
-	 
+
 		# sudo gitlab-rake gitlab:setup
-		
+
 >>>>>>> master
 
 		# systemctl enable firewalld
