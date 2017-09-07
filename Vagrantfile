@@ -36,7 +36,6 @@ Vagrant.configure("2") do |config|
 	end
 
 
-
 	config.vm.define "db" do |db|
 			db.vm.box = "#{default_vm_box}"
 			db.vm.synced_folder ".", "/vagrant", type: "virtualbox"
@@ -97,14 +96,8 @@ Vagrant.configure("2") do |config|
 		sudo yum install postfix
 		sudo systemctl enable postfix
 		sudo systemctl start postfix
-<<<<<<< HEAD
-
-
-=======
 
 		# sudo gitlab-rake gitlab:setup
-
->>>>>>> master
 
 		# systemctl enable firewalld
 		# systemctl start firewalld
