@@ -21,8 +21,6 @@
       become: true
 
     - name: Copying configuration file template | gitlab.rb
-      copy:
-        src: templates/gitlab.rb.j2
       template:
         src: templates/gitlab.rb.j2
         dest: /etc/gitlab/gitlab.rb
