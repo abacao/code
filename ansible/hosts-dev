@@ -5,8 +5,9 @@ gitlab
 db
 
 [gitlab]
-dev.codes.siemens.com ansible_host=192.168.33.21 ansible_port=22 ansible_user=vagrant
-#dev.codes.siemens.com ansible_host=192.168.33.22
+gitlab1 ansible_host=192.168.33.21 ansible_port=22 ansible_user=vagrant
+gitlab2 ansible_host=192.168.33.22 ansible_port=22 ansible_user=vagrant
 
 [db]
-gitlabdb ansible_host=192.168.33.11 ansible_port=22 ansible_user=vagrant
+gitdb1 ansible_host=192.168.33.11 ansible_port=22 ansible_user=vagrant
+gitdb2 ansible_host=192.168.33.12 ansible_port=22 ansible_user=vagrant
