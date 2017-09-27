@@ -41,10 +41,10 @@ unicorn_worker_processes: 2
 #Workhorse
 workhorse_on: "true"
 workhorse_ha: "true"
-workhorse_listen_network: "unix"
+workhorse_listen_network: "tcp"
 workhorse_listen_umask: "000"
 workhorse_listen_addr: "/var/opt/gitlab/gitlab-workhorse/socket"
-workhorse_auth_backend: "http://localhost:8080"
+workhorse_auth_backend: "http://localhost:8181"
 workhorse_auth_socket: "''"
 workhorse_pprof_listen_addr: "''"
 workhorse_prometheus_listen_addr: "''"
@@ -54,9 +54,9 @@ workhorse_api_limit: "0"
 workhorse_api_queue_limit: "0"
 workhorse_api_queue_duration: "30s"
 workhorse_api_ci_long_polling_duration: "60"
-env: "{
-  'PATH' => "/opt/gitlab/bin:/opt/gitlab/embedded/bin:/bin:/usr/bin"
-}"
+#env: "{
+#  'PATH' => "/opt/gitlab/bin:/opt/gitlab/embedded/bin:/bin:/usr/bin"
+#}"
 
 #Gitaly
 gitaly_on: "true"
