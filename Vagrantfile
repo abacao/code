@@ -41,13 +41,14 @@ Vagrant.configure("2") do |config|
 	end
 
 
-	config.vm.define "db1" do |db|
+	config.vm.define "pgdb1" do |db|
 			db.vm.box = "#{default_vm_box}"
 			db.vm.box_version = "#{default_vm_box_version}"
 			db.vm.synced_folder ".", "/vagrant", type: "virtualbox"
 			db.vm.network "private_network", ip: "192.168.33.11"
 			db.vm.hostname = "db1"
 			db.vm.provider :virtualbox do |vb|
+				vb.customize ["modifyvm", :id, "--name", "pgdb1"]
 				vb.customize ["modifyvm", :id, "--memory", "#{default_vm_mem_tiny}"]
 				vb.customize ["modifyvm", :id, "--cpus", 1]
 			end
@@ -69,13 +70,14 @@ Vagrant.configure("2") do |config|
 
 	end
 
-	config.vm.define "db2" do |db|
+	config.vm.define "pgdb2" do |db|
 			db.vm.box = "#{default_vm_box}"
 			db.vm.box_version = "#{default_vm_box_version}"
 			db.vm.synced_folder ".", "/vagrant", type: "virtualbox"
 			db.vm.network "private_network", ip: "192.168.33.12"
 			db.vm.hostname = "db2"
 			db.vm.provider :virtualbox do |vb|
+				vb.customize ["modifyvm", :id, "--name", "pgdb2"]
 				vb.customize ["modifyvm", :id, "--memory", "#{default_vm_mem_tiny}"]
 				vb.customize ["modifyvm", :id, "--cpus", 1]
 			end
@@ -104,6 +106,7 @@ Vagrant.configure("2") do |config|
 		web.vm.network "private_network", ip: "192.168.33.21"
 		web.vm.hostname = "web1.codes.siemens.poc"
 		web.vm.provider :virtualbox do |vb|
+			vb.customize ["modifyvm", :id, "--name", "gitlab1"]
 			vb.customize ["modifyvm", :id, "--memory", "#{default_vm_mem}"]
 			vb.customize ["modifyvm", :id, "--cpus", 1]
 		end
@@ -141,6 +144,7 @@ Vagrant.configure("2") do |config|
 		web.vm.network "private_network", ip: "192.168.33.22"
 		web.vm.hostname = "web1.codes.siemens.poc"
 		web.vm.provider :virtualbox do |vb|
+			vb.customize ["modifyvm", :id, "--name", "gitlab2"]
 			vb.customize ["modifyvm", :id, "--memory", "#{default_vm_mem}"]
 			vb.customize ["modifyvm", :id, "--cpus", 1]
 		end

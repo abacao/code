@@ -9,5 +9,5 @@ gitlab1 ansible_host=192.168.33.21 ansible_port=22 ansible_user=vagrant
 gitlab2 ansible_host=192.168.33.22 ansible_port=22 ansible_user=vagrant
 
 [db]
-gitdb1 ansible_host=192.168.33.11 ansible_port=22 ansible_user=vagrant
-gitdb2 ansible_host=192.168.33.12 ansible_port=22 ansible_user=vagrant
+pgdb1 ansible_host=192.168.33.11 ansible_port=22 ansible_user=vagrant
+pgdb2 ansible_host=192.168.33.12 ansible_port=22 ansible_user=vagrant
