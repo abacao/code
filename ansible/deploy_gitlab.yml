@@ -52,6 +52,15 @@
       become: true
       become_user: root
 
+    - name: Permissions in the tmp folder
+      file:
+        path: /tmp
+        state: directory
+        recurse: yes
+        owner: vagrant
+        group: gitadm
+      become: true
+
     - name: Populate the database - this step has to be run only once in production. In vagrant however ...
       expect:
         command: gitlab-rake gitlab:setup
