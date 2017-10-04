@@ -9,3 +9,8 @@
 id_rsa
 private_key.pem
 public_key.pub
+
+## [ Terraform ]
+terraform.tfvars
+terraform.tfstate*
+terraform.exe
